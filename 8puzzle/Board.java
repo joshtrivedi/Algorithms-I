@@ -1,6 +1,8 @@
 import java.util.Arrays;
 import java.util.ArrayList;
 
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.StdRandom;
 
 public class Board {
     private final int n;
@@ -33,6 +35,29 @@ public class Board {
     }
 
     //TODO DISTANCES
+
+    // number of tiles out of place
+    public int hamming() {
+        int distance = 0;
+
+        for (int row = 0; row < n; row++)
+            for (int col = 0; col < n; col++)
+                if (solution(row, col) != 0 && solution(row, col) != board[row][col])
+                    distance++;
+
+        return distance;
+    }
+
+    // sum of Manhattan distances between tiles and goal
+    public int manhattan() {
+        int distance = 0;
+
+        for (int row = 0; row < n; row++)
+            for (int col = 0; col < n; col++)
+                distance += distanceToCorrectPosition(board[row][col], row, col);
+        
+        return distance;
+    }
 
 //is this board the one we need
     public boolean isGoal() {
@@ -123,6 +148,26 @@ public class Board {
         return row*n + column + 1;
     }
 
-    
+    private int distanceToCorrectPosition(int value, int currentRow, int currentCol) {
+        if (value == 0) return 0;
+
+        int correctRow = (value - 1) / n;
+        int correctCol = (value - 1) % n;
+
+        int dist = Math.abs(currentRow - correctRow) + Math.abs(currentCol - correctCol);
+        return dist;
+    }
+    public static void main(String[] args) {
+        // create initial board from file
+        In in = new In(args[0]);
+        int n = in.readInt();
+        int[][] tiles = new int[n][n];
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                tiles[i][j] = in.readInt();
+        Board initial = new Board(tiles);
+
+        System.out.print(initial.toString());
+    }
 
 }
